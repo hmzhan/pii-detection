@@ -253,7 +253,7 @@ class Deberta3base:
     def fit_model(self, model, data):
         args = TrainingArguments(
             output_dir=self.OUTPUT_DIR,
-            fp16=False,
+            fp16=True,
             learning_rate=2e-5,
             num_train_epochs=3,
             per_device_train_batch_size=4,
