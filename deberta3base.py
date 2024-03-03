@@ -35,6 +35,54 @@ TARGET = [
     'I-URL_PERSONAL'
 ]
 
+ALL_LABELS = [
+    'B-EMAIL',
+    'B-ID_NUM',
+    'B-NAME_STUDENT',
+    'B-PHONE_NUM',
+    'B-STREET_ADDRESS',
+    'B-URL_PERSONAL',
+    'B-USERNAME',
+    'I-ID_NUM',
+    'I-NAME_STUDENT',
+    'I-PHONE_NUM',
+    'I-STREET_ADDRESS',
+    'I-URL_PERSONAL',
+    'O'
+]
+
+LABEL2ID = {
+    'B-EMAIL': 0,
+    'B-ID_NUM': 1,
+    'B-NAME_STUDENT': 2,
+    'B-PHONE_NUM': 3,
+    'B-STREET_ADDRESS': 4,
+    'B-URL_PERSONAL': 5,
+    'B-USERNAME': 6,
+    'I-ID_NUM': 7,
+    'I-NAME_STUDENT': 8,
+    'I-PHONE_NUM': 9,
+    'I-STREET_ADDRESS': 10,
+    'I-URL_PERSONAL': 11,
+    'O': 12
+}
+
+ID2LABEL = {
+    0: 'B-EMAIL',
+    1: 'B-ID_NUM',
+    2: 'B-NAME_STUDENT',
+    3: 'B-PHONE_NUM',
+    4: 'B-STREET_ADDRESS',
+    5: 'B-URL_PERSONAL',
+    6: 'B-USERNAME',
+    7: 'I-ID_NUM',
+    8: 'I-NAME_STUDENT',
+    9: 'I-PHONE_NUM',
+    10: 'I-STREET_ADDRESS',
+    11: 'I-URL_PERSONAL',
+    12: 'O'
+}
+
 
 def compute_metrics(p, all_labels):
     """
@@ -178,9 +226,9 @@ class Model:
     def load_model(self):
         return AutoModelForTokenClassification.from_pretrained(
             self.TRAINING_MODEL_PATH,
-            num_labels=len(all_labels),
-            id2label=id2label,
-            label2id=label2id,
+            num_labels=len(ALL_LABELS),
+            id2label=ID2LABEL,
+            label2id=LABEL2ID,
             ignore_mismatched_sizes=True
         )
 
@@ -217,13 +265,14 @@ class Deberta3base:
             warmup_ratio=0.1,
             weight_decay=0.01
         )
+        collator = DataCollatorForTokenClassification(self.tokenizer, pad_to_multiple_of=16)
         trainer = Trainer(
             model=model,
             args=args,
             train_dataset=data,
             data_collator=collator,
             tokenizer=self.tokenizer,
-            compute_metrics=partial(compute_metrics, all_labels=all_labels)
+            compute_metrics=partial(compute_metrics, all_labels=ALL_LABELS)
         )
         trainer.train()
         trainer.save_model("deberta3base_1024")
