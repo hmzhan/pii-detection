@@ -132,7 +132,7 @@ class Data:
         self.all_labels = sorted(list(set(chain(*[x["labels"] for x in self.raw_data]))))
         self.label2id = {l: i for i, l in enumerate(self.all_labels)}
         self.id2label = {v: k for k, v in self.label2id.items()}
-        self.tokenized_data = self.tokenize_input_text()
+        self.tokenized_data = self.tokenize_input_text(self.raw_data)
 
     @staticmethod
     def load_data(original_data_path, external_data_path, more_data_path):
@@ -198,7 +198,7 @@ class Data:
         length = len(tokenized_text.input_ids)
         return {**tokenized_text, "labels": token_labels, "length": length}
 
-    def tokenize_input_text(self, data, label2id):
+    def tokenize_input_text(self, data):
         """
 
         :param data:
@@ -212,8 +212,8 @@ class Data:
             "provided_labels": [x["labels"] for x in data]
         })
         return ds.map(
-            self.tokenizer,
-            fn_kwargs={"tokenizer": self.tokenizer, "label2id": label2id, "max_length": self.TRAINING_MAX_LENGTH},
+            self._tokenize,
+            fn_kwargs={"tokenizer": self.tokenizer, "label2id": LABEL2ID, "max_length": self.TRAINING_MAX_LENGTH},
             num_proc=3
         )
 
