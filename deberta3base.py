@@ -270,9 +270,9 @@ class Deberta3base:
             weight_decay=0.01
         )
         trainer = Trainer(
-            model=model,
+            model=model.model,
             args=args,
-            train_dataset=data,
+            train_dataset=data.tokenized_data,
             data_collator=model.collator,
             tokenizer=self.tokenizer,
             compute_metrics=partial(compute_metrics, all_labels=ALL_LABELS)
