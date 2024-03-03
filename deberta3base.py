@@ -239,7 +239,7 @@ class Model:
     def create_collator(self):
         return DataCollatorForTokenClassification(
             self.tokenizer,
-            pad_to_multiple=16
+            pad_to_multiple_of=16
         )
 
 
@@ -269,12 +269,11 @@ class Deberta3base:
             warmup_ratio=0.1,
             weight_decay=0.01
         )
-        collator = DataCollatorForTokenClassification(self.tokenizer, pad_to_multiple_of=16)
         trainer = Trainer(
             model=model,
             args=args,
             train_dataset=data,
-            data_collator=collator,
+            data_collator=model.collator,
             tokenizer=self.tokenizer,
             compute_metrics=partial(compute_metrics, all_labels=ALL_LABELS)
         )
