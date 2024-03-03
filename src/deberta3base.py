@@ -22,6 +22,8 @@ from seqeval.metrics import (
 )
 from functools import partial
 from itertools import chain
+from config import *
+
 
 TARGET = [
     'B-EMAIL',
@@ -124,9 +126,9 @@ class Data:
         self.TRAINING_MODEL_PATH = "microsoft/deberta-v3-base"
         self.TRAINING_MAX_LENGTH = 1024
         self.OUTPUT_DIR = "output"
-        self.original_data_path = "/kaggle/input/pii-detection-removal-from-educational-data/train.json"
-        self.external_data_path = "/kaggle/input/fix-punctuation-tokenization-external-dataset/pii_dataset_fixed.json"
-        self.more_data_path = "/kaggle/input/fix-punctuation-tokenization-external-dataset/moredata_dataset_fixed.json"
+        self.original_data_path = f"{ORIGINAL_FILEPATH}{ORIGINAL_FILENAME}"
+        self.external_data_path = f"{EXTERNAL_FILEPATH}{PII_DATASET_FIXED}"
+        self.more_data_path = f"{EXTERNAL_FILEPATH}{MORE_DATASET_FIXED}"
         self.tokenizer = AutoTokenizer.from_pretrained(self.TRAINING_MODEL_PATH)
         self.raw_data = self.load_data(self.original_data_path, self.external_data_path, self.more_data_path)
         self.all_labels = sorted(list(set(chain(*[x["labels"] for x in self.raw_data]))))
