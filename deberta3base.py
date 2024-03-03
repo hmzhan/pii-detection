@@ -1,3 +1,6 @@
+# File comments
+
+
 import json
 import numpy as np
 from transformers import (
@@ -116,6 +119,7 @@ def compute_metrics(p, all_labels):
 
 
 class Data:
+    # Class comments
     def __init__(self):
         self.TRAINING_MODEL_PATH = "microsoft/deberta-v3-base"
         self.TRAINING_MAX_LENGTH = 1024
@@ -143,7 +147,7 @@ class Data:
         pos = []
         neg = []
         for d in original_data:
-            if any(np.array(d['label']) != 'O'):
+            if any(np.array(d['labels']) != 'O'):
                 pos.append(d)
             else:
                 neg.append(d)
