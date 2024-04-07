@@ -49,7 +49,7 @@ def tokenize(example, tokenizer):
         "".join(text),
         return_offsets_mapping=True,
         trunation=False,
-        max_length=config.INFERENCE_MAX_LENGTH
+        max_length=INFERENCE_MAX_LENGTH
     )
 
     return {
@@ -70,7 +70,7 @@ def tokenize_test_data(data):
         "tokens": [x["tokens"] for x in data],
         "trailing_whitespace": [x["trailing_whitespace"] for x in data],
     })
-    tokenizer = AutoTokenizer.from_pretrained(config.MODEL_PATHS.keys()[0])
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATHS.keys()[0])
     dataset = dataset.map(
         tokenize,
         fn_kwars={"tokenizer": tokenizer},
@@ -85,11 +85,11 @@ def make_inference(dataset):
     :param dataset:
     :return:
     """
-    total_weight = sum(config.MODEL_PATHS.values())
+    total_weight = sum(MODEL_PATHS.values())
     intermediate_dir = "./intermediate_predictions"
     os.makedirs(intermediate_dir, exist_ok=True)
 
-    for idx, (model_path, weight) in enumerate(config.MODEL_PATHS.items()):
+    for idx, (model_path, weight) in enumerate(MODEL_PATHS.items()):
         tokenizer = AutoTokenizer.from_pretrained(model_path)
         model = AutoModelForTokenClassification.from_pretrained(model_path)
         collator = DataCollatorForTokenClassification(tokenizer, pad_to_multiple_of=16)
