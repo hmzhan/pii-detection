@@ -124,13 +124,11 @@ def make_inference(dataset):
     return weighted_average_predictions
 
 
-def get_final_prediction(model_path, weighted_average_predictions):
+def get_final_prediction(weighted_average_predictions):
     """
 
     :return:
     """
-    config = json.load(open(Path(model_path) / "config.json"))
-    id2label = config["id2label"]
     preds = weighted_average_predictions.argmax(-1)
     preds_without_o = weighted_average_predictions[:, :, :12].argmax(-1)
     o_preds = weighted_average_predictions[:, :, 12]
@@ -138,13 +136,16 @@ def get_final_prediction(model_path, weighted_average_predictions):
     return np.where(o_preds < threshold, preds_without_o, preds)
 
 
-def process_final_predictions(preds_final, ds):
+def process_final_predictions(model_path, preds_final, ds):
     """
 
     :param preds_final:
     :param ds:
     :return:
     """
+    config = json.load(open(Path(model_path) / "config.json"))
+    id2label = config["id2label"]
+
     pairs = set()
     processed = []
     for p, token_map, offsets, tokens, doc in zip(preds_final, ds["token_map"], ds["offset_mapping"],
@@ -172,6 +173,7 @@ def process_final_predictions(preds_final, ds):
                     "token_str": tokens[token_id]
                 })
                 pairs.add(pair)
+    return processed
 
 
 def find_span(target: list[str], document: list[str]) -> list[list[int]]:
