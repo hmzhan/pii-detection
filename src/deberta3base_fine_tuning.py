@@ -22,7 +22,7 @@ from seqeval.metrics import (
 )
 from functools import partial
 from itertools import chain
-from config import *
+from ..config import *
 
 
 TARGET = [

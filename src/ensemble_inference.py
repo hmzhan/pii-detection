@@ -19,7 +19,7 @@ from transformers import (
     DataCollatorForTokenClassification
 )
 from scipy.special import softmax
-import config
+from ..config import *
 from spacy.lang.en import English
 
 
