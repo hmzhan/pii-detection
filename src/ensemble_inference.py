@@ -70,7 +70,7 @@ def tokenize_test_data(data):
         "tokens": [x["tokens"] for x in data],
         "trailing_whitespace": [x["trailing_whitespace"] for x in data],
     })
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATHS.keys()[0])
+    tokenizer = AutoTokenizer.from_pretrained(list(MODEL_PATHS.keys())[0])
     dataset = dataset.map(
         tokenize,
         fn_kwars={"tokenizer": tokenizer},
