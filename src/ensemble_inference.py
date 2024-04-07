@@ -73,7 +73,7 @@ def tokenize_test_data(data):
     tokenizer = AutoTokenizer.from_pretrained(list(MODEL_PATHS.keys())[0])
     dataset = dataset.map(
         tokenize,
-        fn_kwars={"tokenizer": tokenizer},
+        fn_kwargs={"tokenizer": tokenizer},
         num_proc=2
     )
     return dataset
