@@ -48,7 +48,7 @@ def tokenize(example, tokenizer):
     tokenized = tokenizer(
         "".join(text),
         return_offsets_mapping=True,
-        trunation=False,
+        truncation=False,
         max_length=INFERENCE_MAX_LENGTH
     )
 
