@@ -38,13 +38,17 @@ def tokenize(example, tokenizer):
     idx = 0
 
     for t, ws in zip(example["tokens"], example["trailing_whitespace"]):
+        # Adding each token to the 'text' list
         text.append(t)
+        # Extending 'token_map' with the current index repeated as many times as the length of the token
         token_map.extend([idx] * len(t))
+        # Adding a space for trailing whitespace and marking it with '-1' in 'token_map'
         if ws:
             text.append(" ")
             token_map.append(-1)
+        # Incrementing 'idx' for the next token
         idx += 1
-
+    # Tokenizing the concatenated 'text' and returning offset mappings along with 'token_map'
     tokenized = tokenizer(
         "".join(text),
         return_offsets_mapping=True,
@@ -126,7 +130,16 @@ def make_inference(dataset):
 
 def get_final_prediction(weighted_average_predictions):
     """
+    The aggregated predictions (`weighted_average_predictions`) are processed to determine the most likely label
+    for each token. This is done in two steps:
+     - `preds` captures the index of the maximum value across the last dimension of the predictions array,
+     representing the most likely label for each token considering all possible labels.
+     - `preds_without_O` specifically focuses on non-'O' labels (where 'O' typically represents the 'Outside' or
+     'Other' category in token classification tasks), by excluding the 'O' label from consideration and finding the
+     argmax across the modified label set. This helps in identifying tokens that have a significant likelihood of
+     representing specific information without being overshadowed by the 'O' label's dominance.
 
+    :param weighted_average_predictions: weighted average predictions
     :return:
     """
     preds = weighted_average_predictions.argmax(-1)
