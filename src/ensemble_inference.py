@@ -4,11 +4,8 @@ import re
 import os
 import gc
 import json
-import argparse
 import torch
 import numpy as np
-import pandas as pd
-from itertools import chain
 from pathlib import Path
 from datasets import Dataset
 from transformers import (
@@ -85,9 +82,9 @@ def tokenize_test_data(data):
 
 def make_inference(dataset):
     """
-
-    :param dataset:
-    :return:
+    Make prediction and calculate weighted predictions from four Large Language Models
+    :param dataset: dataset (huggingface transformers)
+    :return: weighted average predictions from four models
     """
     total_weight = sum(MODEL_PATHS.values())
     intermediate_dir = "./intermediate_predictions"
@@ -151,10 +148,10 @@ def get_final_prediction(weighted_average_predictions):
 
 def process_final_predictions(model_path, preds_final, ds):
     """
-
-    :param preds_final:
-    :param ds:
-    :return:
+    Process final predictions
+    :param preds_final: final predictions
+    :param ds: datasets (huggingface transformers)
+    :return: processed predictions
     """
     config = json.load(open(Path(model_path) / "config.json"))
     id2label = config["id2label"]
@@ -191,10 +188,10 @@ def process_final_predictions(model_path, preds_final, ds):
 
 def find_span(target: list[str], document: list[str]) -> list[list[int]]:
     """
-
-    :param target:
-    :param document:
-    :return:
+    Find span for target token
+    :param target: target token
+    :param document: document
+    :return: spans of target token
     """
     idx = 0
     spans = []
